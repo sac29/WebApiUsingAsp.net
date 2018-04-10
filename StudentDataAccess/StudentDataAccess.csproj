@@ -70,6 +70,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>StudentDataModel.edmx</DependentUpon>
     </Compile>
+    <Compile Include="User.cs">
+      <DependentUpon>StudentDataModel.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EntityDeploy Include="StudentDataModel.edmx">

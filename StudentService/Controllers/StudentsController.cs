@@ -5,15 +5,21 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using StudentDataAccess;
+using System.Threading;
+
 namespace StudentService.Controllers
 {
     public class StudentsController : ApiController
     {
+
         [HttpGet]
+     //   [BasicAuthentication]
         public HttpResponseMessage LoadStudents(string gender="All")
         {
+
             using (StudentDBEntities entities = new StudentDBEntities())
             {
+               // string username = Thread.CurrentPrincipal.Identity.Name;
                 switch (gender.ToLower())
                 {
                     case "all":
@@ -25,14 +31,14 @@ namespace StudentService.Controllers
                         return Request.CreateResponse(HttpStatusCode.OK,
                             entities.Students.Where(e => e.Gender.ToLower() == "female").ToList());
                     default:
-                        return Request.CreateErrorResponse(HttpStatusCode.BadRequest,
-                            "value for gender must be All, Male or Female" + gender + "is invalid");
+                        return Request.CreateResponse(HttpStatusCode.BadRequest);
                 }
 
               
             }
         }
-        [HttpGet]
+       [Route("api/sachin/{id}")]
+       [HttpGet]
         public HttpResponseMessage LoadStudentById(int id)
         {
             using (StudentDBEntities entities = new StudentDBEntities())
@@ -49,6 +55,7 @@ namespace StudentService.Controllers
             }
         }
         [HttpPost]
+       
         public HttpResponseMessage CreateStudent([FromBody]Student student)
         {
             try
@@ -67,6 +74,17 @@ namespace StudentService.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
             }
         }
+        [Route("api/students/{id}/courses")]
+        public IEnumerable<string> GetStudentCourses(int id)
+        {
+            if (id == 1)
+            {
+                return new List<string>() { "C#", "Asp.net", "sql" };
+            }
+            else
+                return new List<string>() { "C++", "Asp.net", "mysql" };
+        }
+
         [HttpDelete]
         public HttpResponseMessage RemoveStudentById(int id)
         {
